@@ -4,12 +4,12 @@
     -fx-border-color: #fff;
 } */
 
-/* VBox {
+VBox {
     -fx-border-width: 1px;
     -fx-border-color: red;
 }
 
-HBox {
+/*HBox {
     -fx-border-width: 1px;
     -fx-border-color: blue;
 }
@@ -22,19 +22,25 @@ GridPane {
 /* generic classes */
 Button{
     -fx-cursor: hand;
+    -fx-background-radius: 10px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+    -fx-background-color: #377BE1;
 }
 
 Button:hover{
-    -fx-opacity: 0.5;
+    -fx-opacity: 0.8;
 }
 
 /* text */
 .text-size-lg{
-    -fx-font-size: 36px;
+    -fx-font-size: 20px;
 }
 
 .text-size-md{
-    -fx-font-size: 24px;
+    -fx-font-size: 16px;
 }
 
 .text-size-sm{
@@ -97,7 +103,7 @@ Button:hover{
 }
 
 .header{
-    -fx-font-size: 96px;
+    -fx-font-size: 50px;
     -fx-font-weight: 300;
 }
 
@@ -107,6 +113,9 @@ Button:hover{
 
 .link-text{
     -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-text-fill: #BEB9B9;
+    -fx-underline: true;
 }
 
 .link-text:hover{
