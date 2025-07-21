@@ -1,6 +1,7 @@
 package org.example.expensetrackerclient.utils;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ColorPicker;
 
 public class Utlities {
     public static final int APP_WIDTH=900;
@@ -11,4 +12,10 @@ public class Utlities {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public static String getHexColorValue(ColorPicker colorPicker){
+        String color=colorPicker.getValue().toString();
+        return color.substring(2,color.length()-2);
+    }
+
 }

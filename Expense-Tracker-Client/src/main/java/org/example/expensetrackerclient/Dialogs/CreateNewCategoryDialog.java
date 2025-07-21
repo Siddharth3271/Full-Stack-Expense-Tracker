@@ -1,12 +1,18 @@
 package org.example.expensetrackerclient.Dialogs;
 
+import com.google.gson.JsonObject;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.example.expensetrackerclient.Models.User;
+import org.example.expensetrackerclient.utils.SQLUtil;
+import org.example.expensetrackerclient.utils.Utlities;
+
+import javax.swing.text.Utilities;
 
 
 public class CreateNewCategoryDialog extends CustomDialog{
@@ -37,7 +43,33 @@ public class CreateNewCategoryDialog extends CustomDialog{
         createCategoryButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
+                //extract the data
+                String categoryName=newCategoryTextField.getText();
+                String color= Utlities.getHexColorValue(colorPicker);
+                System.out.println(color);
 
+                if (categoryName.isEmpty()) {
+                    System.out.println("Category name cannot be empty!");
+                    Utlities.showAlertDialog(Alert.AlertType.ERROR,"Category name cannot be empty!");
+                    return;
+                }
+
+                JsonObject userData=new JsonObject();
+                userData.addProperty("id",user.getId());
+
+                JsonObject transactionCategoryData=new JsonObject();
+                transactionCategoryData.add("user",userData);
+                transactionCategoryData.addProperty("categoryName",categoryName);
+                transactionCategoryData.addProperty("categoryColor",color);
+
+                boolean postTransactionCategoryStatus= SQLUtil.postTransactionCategory(transactionCategoryData);
+
+                if(postTransactionCategoryStatus){
+                    Utlities.showAlertDialog(Alert.AlertType.INFORMATION,"Success: Create a Transaction Category");
+                }
+                else{
+                    Utlities.showAlertDialog(Alert.AlertType.ERROR,"Error: Failed to create a Transaction Category");
+                }
             }
         });
 

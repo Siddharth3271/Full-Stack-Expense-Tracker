@@ -20,7 +20,7 @@ public class DashBoardView {
     private Label currentBalanceLabel,currentBalance;
     private Label totalIncomeLabel,totalIncome;
     private Label totalExpenseLabel,totalExpense;
-    private MenuItem createCategoryMenuItem;
+    private MenuItem createCategoryMenuItem,viewCategoriesMenuItem;
 
     public DashBoardView(String email){
         this.email=email;
@@ -61,7 +61,8 @@ public class DashBoardView {
         Menu fileMenu=new Menu("File");
 
         createCategoryMenuItem=new MenuItem("Create Category");
-        fileMenu.getItems().addAll(createCategoryMenuItem);
+        viewCategoriesMenuItem=new MenuItem("View Categories");
+        fileMenu.getItems().addAll(createCategoryMenuItem,viewCategoriesMenuItem);
         menuBar.getMenus().addAll(fileMenu);
 
         return menuBar;
@@ -103,6 +104,10 @@ public class DashBoardView {
 
     public void setCreateCategoryMenuItem(MenuItem createCategoryMenuItem) {
         this.createCategoryMenuItem = createCategoryMenuItem;
+    }
+
+    public MenuItem getViewCategoriesMenuItem() {
+        return viewCategoriesMenuItem;
     }
 
     public String getEmail() {

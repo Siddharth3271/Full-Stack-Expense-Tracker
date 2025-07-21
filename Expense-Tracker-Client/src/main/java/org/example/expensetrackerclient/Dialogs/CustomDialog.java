@@ -7,7 +7,7 @@ import javafx.scene.control.Dialog;
 import org.example.expensetrackerclient.Models.User;
 
 public class CustomDialog extends Dialog {
-    private User user;
+    protected User user;
     public CustomDialog(User user){
         this.user=user;
         //add the stylesheet
