@@ -33,7 +33,9 @@ Button{
 Button:hover{
     -fx-opacity: 0.8;
 }
-
+ScrollPane, ScrollPane > .viewport{
+    -fx-background-color:transparent;
+}
 /* text */
 .text-size-lg{
     -fx-font-size: 20px;

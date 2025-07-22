@@ -65,6 +65,17 @@ public class TransactionCategoryService {
     }
 
     //delete
+    public boolean deleteTransactionCategoryById(int transactionCategoryById){
+        logger.info("Deleting transaction Category: "+transactionCategoryById);
 
+        Optional<TransactionCategory>transactionCategoryOptional=transactionCategoryRepository.findById(transactionCategoryById);
+
+        if(transactionCategoryOptional.isEmpty()){
+            return false;
+        }
+
+        transactionCategoryRepository.delete(transactionCategoryOptional.get());
+        return true;
+    }
 
 }

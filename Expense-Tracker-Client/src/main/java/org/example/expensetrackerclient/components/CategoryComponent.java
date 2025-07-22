@@ -7,6 +7,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.example.expensetrackerclient.Controller.DashBoardController;
 import org.example.expensetrackerclient.Models.TransactionCategory;
@@ -74,6 +75,22 @@ public class CategoryComponent extends HBox {
         deleteButton=new Button("Delete");
         deleteButton.setMinWidth(20);
         deleteButton.getStyleClass().addAll("text-size-sm","bg-light-red","text-white");
+        deleteButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(!SQLUtil.deleteTransactionCategoryById(transactionCategory.getId())){
+                    return;
+                }
+
+                //remove the component from the dialog
+                setVisible(false);
+                setManaged(false);
+
+                if(getParent() instanceof VBox){
+                    ((VBox)getParent()).getChildren().remove(CategoryComponent.this);
+                }
+            }
+        });
 
         getChildren().addAll(categoryTextField,colorPicker,editButton,saveButton,deleteButton);
     }

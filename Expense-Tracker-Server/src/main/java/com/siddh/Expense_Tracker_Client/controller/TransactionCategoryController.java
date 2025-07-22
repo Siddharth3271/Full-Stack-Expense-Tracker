@@ -66,4 +66,16 @@ public class TransactionCategoryController {
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedTransactionCategory);
     }
+
+    //delete
+    @DeleteMapping("/{id}")
+    public ResponseEntity<TransactionCategory>deleteTransactionalCategoryById(@PathVariable int id){
+        logger.info("Deleting transaction category by id "+id);
+
+        if(!transactionCategoryService.deleteTransactionCategoryById(id)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
