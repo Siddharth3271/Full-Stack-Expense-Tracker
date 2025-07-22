@@ -7,6 +7,8 @@ import org.example.expensetrackerclient.Models.User;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +151,32 @@ public class SQLUtil {
             conn=ApiUtil.fetchApi("/api/v1/transaction-category",ApiUtil.RequestMethod.POST,transactionCategoryData);
 
             if(conn.getResponseCode()!=200){
+                return false;
+            }
+
+            return true;
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        finally{
+            if(conn!=null){
+                conn.disconnect();
+            }
+        }
+        return false;
+    }
+
+    //update
+    public static boolean putTransactionCategory(int categoryId, String newCategoryName,String newCategoryColor){
+        HttpURLConnection conn=null;
+        String encodedCategoryName= URLEncoder.encode(newCategoryName, StandardCharsets.UTF_8);
+        String encodedCategoryColor= URLEncoder.encode(newCategoryColor, StandardCharsets.UTF_8);
+        try{
+            conn=ApiUtil.fetchApi("/api/v1/transaction-category/"+categoryId+"?newCategoryName="+encodedCategoryName+"&newCategoryColor="+encodedCategoryColor,ApiUtil.RequestMethod.PUT,null);
+
+            if(conn.getResponseCode()!=200){
+                System.out.println("Error(putTransactionCategory):"+conn.getResponseCode());
                 return false;
             }
 

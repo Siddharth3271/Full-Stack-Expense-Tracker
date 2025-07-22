@@ -22,6 +22,11 @@ public class TransactionCategoryService {
     private TransactionCategoryRepository transactionCategoryRepository;
 
     //get
+    public Optional<TransactionCategory>getTransactionCategoryById(int id){
+        logger.info("Getting Transaction Category by ID :"+id);
+        return transactionCategoryRepository.findById(id);
+    }
+
     public List<TransactionCategory>getAllTransactionCategoriesByUserId(int userId){
         logger.info("Getting all transaction Categories from user: "+userId);
         return transactionCategoryRepository.findAllByUserId(userId);
@@ -43,6 +48,23 @@ public class TransactionCategoryService {
 
         return transactionCategoryRepository.save(transactionCategory);
     }
+
+    //update category(put)
+    public TransactionCategory updateTransactionCategoryById(int transactionCategoryId, String newCategoryName, String newCategoryColor){
+        logger.info("Updating Transaction Category with ID :"+transactionCategoryId);
+        Optional<TransactionCategory>optionalTransactionCategory=transactionCategoryRepository.findById(transactionCategoryId);
+
+        if(optionalTransactionCategory.isEmpty()){
+            return null;
+        }
+        TransactionCategory updatedTransactionCategory=optionalTransactionCategory.get();
+        updatedTransactionCategory.setCategoryName(newCategoryName);
+        updatedTransactionCategory.setCategoryColor(newCategoryColor);
+
+        return transactionCategoryRepository.save(updatedTransactionCategory);
+    }
+
+    //delete
 
 
 }
