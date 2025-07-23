@@ -1,12 +1,14 @@
 package org.example.expensetrackerclient.components;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.example.expensetrackerclient.Controller.DashBoardController;
@@ -31,6 +33,7 @@ public class CategoryComponent extends HBox {
         setSpacing(10);
         setAlignment(Pos.CENTER_LEFT);
         getStyleClass().addAll("rounded-border","field-background","padding-8px");
+        setPadding(new Insets(5, 15, 5, 10));
 
         categoryTextField=new TextField();
         categoryTextField.setText(transactionCategory.getCategoryName());
@@ -91,8 +94,9 @@ public class CategoryComponent extends HBox {
                 }
             }
         });
-
-        getChildren().addAll(categoryTextField,colorPicker,editButton,saveButton,deleteButton);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+        getChildren().addAll(categoryTextField,spacer,colorPicker,editButton,saveButton,deleteButton);
     }
 
     private void handleToggle(){

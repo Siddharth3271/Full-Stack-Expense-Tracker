@@ -13,21 +13,21 @@ VBox {
     -fx-border-width: 1px;
     -fx-border-color: blue;
 }
-
+*/
 GridPane {
     -fx-border-width: 1px;
     -fx-border-color: green;
-} */
+}
 
 /* generic classes */
 Button{
     -fx-cursor: hand;
-    -fx-background-radius: 10px;
+    /*-fx-background-radius: 10px;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-padding: 10px;
-    -fx-background-color: #377BE1;
+    -fx-background-color: #377BE1;*/
 }
 
 Button:hover{
@@ -122,5 +122,9 @@ ScrollPane, ScrollPane > .viewport{
 
 .link-text:hover{
     -fx-text-fill: #4265c7;
+}
+
+.dashboard-padding{
+    -fx-padding: 12px 18px;
 }
 
