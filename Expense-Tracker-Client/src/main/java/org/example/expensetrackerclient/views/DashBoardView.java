@@ -161,5 +161,7 @@ public class DashBoardView {
         return email;
     }
 
-
+    public Button getAddTransactionButton() {
+        return addTransactionButton;
+    }
 }

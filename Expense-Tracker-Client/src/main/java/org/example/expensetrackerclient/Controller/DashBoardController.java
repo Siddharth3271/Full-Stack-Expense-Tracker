@@ -2,7 +2,9 @@ package org.example.expensetrackerclient.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import org.example.expensetrackerclient.Dialogs.CreateNewCategoryDialog;
+import org.example.expensetrackerclient.Dialogs.CreateOrEditTransactionDialog;
 import org.example.expensetrackerclient.Dialogs.VieworEditTransactionCategoryDialog;
 import org.example.expensetrackerclient.Models.User;
 import org.example.expensetrackerclient.utils.SQLUtil;
@@ -25,6 +27,7 @@ public class DashBoardController {
 
     private void initialize(){
         addMenuActions();
+        addRecentTransactionActions();
     }
 
     private void addMenuActions(){
@@ -39,6 +42,15 @@ public class DashBoardController {
             @Override
             public void handle(ActionEvent actionEvent) {
                 new VieworEditTransactionCategoryDialog(user,DashBoardController.this).showAndWait();
+            }
+        });
+    }
+
+    private void addRecentTransactionActions(){
+        dashBoardView.getAddTransactionButton().setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                new CreateOrEditTransactionDialog(user,false).showAndWait();
             }
         });
     }

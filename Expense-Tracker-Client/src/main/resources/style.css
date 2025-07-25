@@ -127,4 +127,9 @@ ScrollPane, ScrollPane > .viewport{
 .dashboard-padding{
     -fx-padding: 12px 18px;
 }
+.combo-box .list-cell,
+.date-picker .text-field{
+    -fx-background-color: #515050;
+    -fx-text-fill: #BEB989
+}
 
