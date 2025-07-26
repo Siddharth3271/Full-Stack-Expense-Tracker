@@ -1,14 +1,20 @@
 package org.example.expensetrackerclient.Dialogs;
 
+import com.google.gson.JsonObject;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.example.expensetrackerclient.Models.TransactionCategory;
 import org.example.expensetrackerclient.Models.User;
 import org.example.expensetrackerclient.utils.SQLUtil;
+import org.example.expensetrackerclient.utils.Utlities;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CreateOrEditTransactionDialog extends CustomDialog{
@@ -89,13 +95,78 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         Button saveButton=new Button("Save");
         saveButton.setPrefWidth(150);
         saveButton.getStyleClass().addAll("bg-light-blue","text-white","text-size-md","rounded-border");
+        saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                JsonObject transactionDataObject=new JsonObject();
+                //extract data from the nodes
+                String transactionName=transactionNameField.getText();
+                transactionDataObject.addProperty("transactionName", transactionName);
+
+                try {
+                    // Proceed with saving logic
+                    double transactionAmount=Double.parseDouble(transactionAmountField.getText());
+                    transactionDataObject.addProperty("transactionAmount",transactionAmount);
+
+                } catch (NumberFormatException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid Input");
+                    alert.setHeaderText("Invalid Transaction Amount");
+                    alert.setContentText("Please enter a valid numeric value for the transaction amount.");
+                    alert.showAndWait();
+                    return;
+                }
+                LocalDate transactionDate=transactionDatePicker.getValue();
+                if (transactionDate == null) {
+                    Utlities.showAlertDialog(Alert.AlertType.ERROR, "Please select a date.");
+                    return;
+                }
+//                transactionDataObject.addProperty("transactionDate",transactionDate.format(
+//                        DateTimeFormatter.BASIC_ISO_DATE
+//                ));
+                transactionDataObject.addProperty("transactionDate",transactionDate.toString());
+                String transactionType=((RadioButton)transactionTypeToggleGroup.getSelectedToggle()).getText();
+                transactionDataObject.addProperty("transactionType",transactionType.toLowerCase());
+                String transactionCategoryName=transactionCategoryBox.getValue();
+
+                if(transactionCategoryName!=null){
+                    TransactionCategory transactionCategory= Utlities.findTransactionCategoryByName(
+                            transactionCategories,transactionCategoryName
+                    );
+                    JsonObject transactionCategoryData=new JsonObject();
+                    transactionCategoryData.addProperty("id",transactionCategory.getId());
+                    transactionDataObject.add("transactionCategory",transactionCategoryData);
+                }
+
+                JsonObject userData=new JsonObject();
+                userData.addProperty("id",user.getId());
+                transactionDataObject.add("user",userData);
+
+                System.out.println("Sending JSON: " + transactionDataObject.toString());
+                //perform the post request to perform the transaction
+                if(SQLUtil.postTransaction(transactionDataObject)){
+                    //display alert message
+                    Utlities.showAlertDialog(Alert.AlertType.INFORMATION,"Successfully created Transaction");
+                }
+                else{
+                    Utlities.showAlertDialog(Alert.AlertType.ERROR,"Error: Failed to create transaction...");
+                }
+            }
+        });
 
         Button cancelButton=new Button("Cancel");
         cancelButton.setPrefWidth(150);
         cancelButton.getStyleClass().addAll("text-size-md","rounded-border","bg-light-red","text-white");
+        cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                CreateOrEditTransactionDialog.this.close();
+            }
+        });
 
         confirmAndCancelBox.getChildren().addAll(saveButton,cancelButton);
 
         return confirmAndCancelBox;
     }
+
 }

@@ -29,9 +29,9 @@ Button{
     -fx-padding: 10px;
     -fx-background-color: #377BE1;*/
 }
-
+.combo-box .list-cell:hover,
 Button:hover{
-    -fx-opacity: 0.8;
+    -fx-opacity: 0.5;
 }
 ScrollPane, ScrollPane > .viewport{
     -fx-background-color:transparent;
@@ -86,6 +86,9 @@ ScrollPane, ScrollPane > .viewport{
 /* padding */
 .padding-10px{
     -fx-padding: 10px;
+}
+.padding-8px{
+    -fx-padding: 8px;
 }
 
 /* border */

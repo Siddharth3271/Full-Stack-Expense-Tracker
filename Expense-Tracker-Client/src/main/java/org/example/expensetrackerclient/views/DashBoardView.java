@@ -136,7 +136,8 @@ public class DashBoardView {
 
         recentTransactionLabelandButton.getChildren().addAll(recentTransactionLabel,labelandButtonSpace,addTransactionButton);
 
-        recentTransactionsBox=new VBox();
+        //recent transactions box
+        recentTransactionsBox=new VBox(8);
         recentTransactionScrollPane=new ScrollPane(recentTransactionsBox);
         recentTransactionScrollPane.setFitToWidth(true);
         recentTransactionScrollPane.setFitToHeight(true);
@@ -163,5 +164,9 @@ public class DashBoardView {
 
     public Button getAddTransactionButton() {
         return addTransactionButton;
+    }
+
+    public VBox getRecentTransactionsBox() {
+        return recentTransactionsBox;
     }
 }

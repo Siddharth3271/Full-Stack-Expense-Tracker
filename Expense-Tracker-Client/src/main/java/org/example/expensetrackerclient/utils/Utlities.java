@@ -2,6 +2,9 @@ package org.example.expensetrackerclient.utils;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ColorPicker;
+import org.example.expensetrackerclient.Models.TransactionCategory;
+
+import java.util.List;
 
 public class Utlities {
     public static final int APP_WIDTH=900;
@@ -18,4 +21,12 @@ public class Utlities {
         return color.substring(2,color.length()-2);
     }
 
+    public static TransactionCategory findTransactionCategoryByName(List<TransactionCategory> transactionCategories, String categoryName){
+        for(TransactionCategory transactionCategory:transactionCategories){
+            if(transactionCategory.getCategoryName().equals(categoryName)){
+                return transactionCategory;
+            }
+        }
+        return null;
+    }
 }

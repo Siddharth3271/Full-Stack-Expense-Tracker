@@ -7,8 +7,14 @@ import com.siddh.Expense_Tracker_Client.repository.TransactionCategoryRepository
 import com.siddh.Expense_Tracker_Client.repository.TransactionRepository;
 import com.siddh.Expense_Tracker_Client.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
+
+import javax.swing.text.html.Option;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -24,6 +30,22 @@ public class TransactionService {
 
     @Autowired
     private UserRepository userRepository;
+
+    //get
+    public List<Transaction>getRecentTransactionsByUserId(int userId,int startPage,int endPage,int size){
+        logger.info("Getting the most recent Transactions for user "+userId);
+
+        List<Transaction>combinedResults=new ArrayList<>();
+
+        for(int page=startPage;page<=endPage;page++){
+            Pageable pageable= PageRequest.of(page,size);
+            List<Transaction>pageResults=transactionRepository.findAllByUserIdOrderByTransactionDateDesc(
+                    userId,pageable
+            );
+            combinedResults.addAll(pageResults);
+        }
+        return combinedResults;
+    }
 
     //post
     public Transaction createTransaction(Transaction transaction){
@@ -49,5 +71,15 @@ public class TransactionService {
         newTransaction.setTransactionType(transaction.getTransactionType());
 
         return transactionRepository.save(newTransaction);
+    }
+
+    //delete
+    public void deleteTransactionById(int transactionId){
+        logger.info("Deleting Transaction with id "+transactionId);
+        Optional<Transaction>transactionOptional=transactionRepository.findById(transactionId);
+
+        if(transactionOptional.isEmpty()) return;
+
+        transactionRepository.delete(transactionOptional.get());
     }
 }
