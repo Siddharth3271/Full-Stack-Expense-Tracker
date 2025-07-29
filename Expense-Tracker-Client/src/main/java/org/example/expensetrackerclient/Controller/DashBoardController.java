@@ -31,12 +31,25 @@ public class DashBoardController {
 
     public void fetchUserData(){
         //load the loader animation
-
+        dashBoardView.getLoadingAnimationPane().setVisible(true);
 
         //remove all the children from the dashboard view
         dashBoardView.getRecentTransactionsBox().getChildren().clear();
         user= SQLUtil.getUserByEmail(dashBoardView.getEmail());
         createRecentTransactionComponents();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Thread.sleep(1000);
+                    dashBoardView.getLoadingAnimationPane().setVisible(false);
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void createRecentTransactionComponents(){

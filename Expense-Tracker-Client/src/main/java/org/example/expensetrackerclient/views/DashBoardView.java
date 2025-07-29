@@ -1,16 +1,19 @@
 package org.example.expensetrackerclient.views;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.example.expensetrackerclient.Controller.DashBoardController;
+import org.example.expensetrackerclient.animations.LoadingAnimationPane;
 import org.example.expensetrackerclient.utils.ViewNavigator;
 import org.example.expensetrackerclient.utils.Utlities;
 
 public class DashBoardView {
 
     private String email;
-
+    private LoadingAnimationPane loadingAnimationPane;
     private Label currentBalanceLabel,currentBalance;
     private Label totalIncomeLabel,totalIncome;
     private Label totalExpenseLabel,totalExpense;
@@ -21,7 +24,7 @@ public class DashBoardView {
 
     public DashBoardView(String email){
         this.email=email;
-
+        loadingAnimationPane=new LoadingAnimationPane(Utlities.APP_WIDTH, Utlities.APP_HEIGHT);
         currentBalanceLabel=new Label("Current Balance: ");
         totalExpenseLabel=new Label("Total Expense: ");
         totalIncomeLabel=new Label("Total Income: ");
@@ -39,6 +42,20 @@ public class DashBoardView {
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         new DashBoardController(this);
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                loadingAnimationPane.resizeWidth(t1.doubleValue());
+            }
+        });
+
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                loadingAnimationPane.resizeHeight(t1.doubleValue());
+            }
+        });
+
         ViewNavigator.switchViews(scene);
     }
 
@@ -58,7 +75,7 @@ public class DashBoardView {
         VBox.setVgrow(contentGridPane,Priority.ALWAYS);
 
         mainContainerWrapper.getChildren().addAll(balanceSummaryBox,contentGridPane);
-        mainContainer.getChildren().addAll(menuBar,mainContainerWrapper);
+        mainContainer.getChildren().addAll(menuBar,mainContainerWrapper,loadingAnimationPane);
         return new Scene(mainContainer, Utlities.APP_WIDTH,Utlities.APP_HEIGHT);
     }
 
@@ -168,5 +185,9 @@ public class DashBoardView {
 
     public VBox getRecentTransactionsBox() {
         return recentTransactionsBox;
+    }
+
+    public LoadingAnimationPane getLoadingAnimationPane(){
+        return loadingAnimationPane;
     }
 }
