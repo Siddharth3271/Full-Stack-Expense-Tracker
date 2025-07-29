@@ -30,7 +30,13 @@ public class DashBoardController {
     }
 
     public void fetchUserData(){
+        //load the loader animation
+
+
+        //remove all the children from the dashboard view
+        dashBoardView.getRecentTransactionsBox().getChildren().clear();
         user= SQLUtil.getUserByEmail(dashBoardView.getEmail());
+        createRecentTransactionComponents();
     }
 
     private void createRecentTransactionComponents(){
@@ -44,9 +50,10 @@ public class DashBoardController {
     }
 
     private void initialize(){
+
         addMenuActions();
         addRecentTransactionActions();
-        createRecentTransactionComponents();
+
     }
 
     private void addMenuActions(){
@@ -69,9 +76,13 @@ public class DashBoardController {
         dashBoardView.getAddTransactionButton().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                new CreateOrEditTransactionDialog(user,false).showAndWait();
+                new CreateOrEditTransactionDialog(DashBoardController.this,false).showAndWait();
             }
         });
+    }
+
+    public User getUser(){
+        return user;
     }
 
 }

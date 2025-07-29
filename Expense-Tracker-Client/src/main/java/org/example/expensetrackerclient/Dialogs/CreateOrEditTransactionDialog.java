@@ -8,8 +8,11 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.example.expensetrackerclient.Controller.DashBoardController;
+import org.example.expensetrackerclient.Models.Transaction;
 import org.example.expensetrackerclient.Models.TransactionCategory;
 import org.example.expensetrackerclient.Models.User;
+import org.example.expensetrackerclient.components.TransactionComponent;
 import org.example.expensetrackerclient.utils.SQLUtil;
 import org.example.expensetrackerclient.utils.Utlities;
 
@@ -24,12 +27,14 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
     private DatePicker transactionDatePicker;
     private ComboBox<String>transactionCategoryBox;
     private ToggleGroup transactionTypeToggleGroup;
-
+    private TransactionComponent transactionComponent;
     private boolean isEditing;
-
-    public CreateOrEditTransactionDialog(User user,boolean isEditing) {
-        super(user);
+    private DashBoardController dashBoardController;
+    public CreateOrEditTransactionDialog(DashBoardController dashBoardController, TransactionComponent transactionComponent, boolean isEditing) {
+        super(dashBoardController.getUser());
         this.isEditing=isEditing;
+        this.transactionComponent=transactionComponent;
+        this.dashBoardController=dashBoardController;
 
         setTitle(isEditing?"Edit Transaction":"Create new Transaction");
         getDialogPane().setPrefSize(500, 400);
@@ -39,6 +44,13 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         getDialogPane().setContent(mainContentBox);
 
     }
+
+    //use for creating transactions
+    public CreateOrEditTransactionDialog(DashBoardController dashBoardController,boolean isEditing){
+        this(dashBoardController,null,isEditing);
+    }
+
+
 
     private VBox createMainContentBox(){
         VBox mainContentBox=new VBox(25);
@@ -65,6 +77,15 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
             transactionCategoryBox.getItems().add(transactionCategory.getCategoryName());
         }
 
+        if(isEditing){
+            Transaction transaction=transactionComponent.getTransaction();
+            transactionNameField.setText(transaction.getTransactionName());
+            transactionAmountField.setText(String.valueOf(transaction.getTransactionAmount()));
+            transactionDatePicker.setValue(transaction.getTransactionDate());
+            transactionCategoryBox.setValue(
+                    transaction.getTransactionCategory()==null?"":transaction.getTransactionCategory().getCategoryName()
+            );
+        }
 
         mainContentBox.getChildren().addAll(transactionNameField,transactionAmountField,transactionDatePicker,transactionCategoryBox,createTransactionTypeRadioButtons(),createConfirmCancelButtonBox());
         return mainContentBox;
@@ -84,6 +105,16 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         expenseRadioButton.setToggleGroup(transactionTypeToggleGroup);
         expenseRadioButton.getStyleClass().addAll("text-size-md","text-light-gray");
 
+        if(isEditing){
+            Transaction transaction=transactionComponent.getTransaction();
+            if(transaction.getTransactionType().equalsIgnoreCase("income")){
+                incomeRadioButton.setSelected(true);
+            }
+            else{
+                expenseRadioButton.setSelected(true);
+            }
+        }
+
         radioButtonBox.getChildren().addAll(incomeRadioButton,expenseRadioButton);
         return radioButtonBox;
     }
@@ -99,6 +130,11 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
             @Override
             public void handle(MouseEvent mouseEvent) {
                 JsonObject transactionDataObject=new JsonObject();
+
+                if(isEditing){
+                    transactionDataObject.addProperty("id",transactionComponent.getTransaction().getId());
+                }
+
                 //extract data from the nodes
                 String transactionName=transactionNameField.getText();
                 transactionDataObject.addProperty("transactionName", transactionName);
@@ -144,12 +180,17 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
 
                 System.out.println("Sending JSON: " + transactionDataObject.toString());
                 //perform the post request to perform the transaction
-                if(SQLUtil.postTransaction(transactionDataObject)){
+                if(!isEditing?SQLUtil.postTransaction(transactionDataObject):SQLUtil.putTransaction(transactionDataObject)){
                     //display alert message
-                    Utlities.showAlertDialog(Alert.AlertType.INFORMATION,"Successfully created Transaction");
+                    Utlities.showAlertDialog(Alert.AlertType.INFORMATION,isEditing?"Successfully saved transaction":"Successfully created Transaction");
+                    //refresh our dashboard
+                    dashBoardController.fetchUserData();
+
+
                 }
+
                 else{
-                    Utlities.showAlertDialog(Alert.AlertType.ERROR,"Error: Failed to create transaction...");
+                    Utlities.showAlertDialog(Alert.AlertType.ERROR,isEditing?"Error: Failed to save transaction":"Error: Failed to create transaction...");
                 }
             }
         });

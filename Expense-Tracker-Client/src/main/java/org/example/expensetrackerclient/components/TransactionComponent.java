@@ -11,6 +11,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import org.example.expensetrackerclient.Controller.DashBoardController;
+import org.example.expensetrackerclient.Dialogs.CreateOrEditTransactionDialog;
 import org.example.expensetrackerclient.Models.Transaction;
 import org.example.expensetrackerclient.utils.SQLUtil;
 
@@ -74,6 +75,12 @@ public class TransactionComponent extends HBox {
         actionButtonSection.setAlignment(Pos.CENTER);
         editButton=new Button("Edit");
         editButton.getStyleClass().addAll("text-size-md","rounded-border");
+        editButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                new CreateOrEditTransactionDialog(dashBoardController,TransactionComponent.this,true).showAndWait();
+            }
+        });
 
         deleteButton=new Button("Delete");
         deleteButton.getStyleClass().addAll("text-size-md","rounded-border","bg-light-red","text-white");
@@ -94,5 +101,9 @@ public class TransactionComponent extends HBox {
 
         actionButtonSection.getChildren().addAll(editButton,deleteButton);
         return actionButtonSection;
+    }
+
+    public Transaction getTransaction(){
+        return transaction;
     }
 }

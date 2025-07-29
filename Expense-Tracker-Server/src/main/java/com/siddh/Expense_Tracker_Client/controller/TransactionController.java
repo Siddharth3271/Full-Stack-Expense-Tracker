@@ -38,6 +38,18 @@ public class TransactionController{
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    //put
+    @PutMapping
+    public ResponseEntity<Transaction>updateTransaction(@RequestBody Transaction transaction){
+        logger.info("Updating transaction with id: "+transaction.getId());
+        Transaction updatedTransaction= transactionService.updateTransaction(transaction);
+
+        if(updatedTransaction==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     //delete
     @DeleteMapping("/{transactionId}")
     public ResponseEntity<Transaction>deleteTransactionById(@PathVariable int transactionId){
@@ -46,4 +58,5 @@ public class TransactionController{
         transactionService.deleteTransactionById(transactionId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 }

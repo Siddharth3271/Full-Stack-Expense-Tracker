@@ -254,6 +254,29 @@ public class SQLUtil {
     }
 
     //update
+    public static boolean putTransaction(JsonObject newTransactionData){
+        HttpURLConnection conn=null;
+        try{
+            conn=ApiUtil.fetchApi("/api/v1/transaction",ApiUtil.RequestMethod.PUT,newTransactionData);
+//            int statusCode = conn.getResponseCode();
+//            System.out.println("Response code: " + statusCode);
+            if(conn.getResponseCode()!=200){
+                System.out.println("Error(Put transaction): "+conn.getResponseCode());
+                return false;
+            }
+
+            return true;
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        finally{
+            if(conn!=null){
+                conn.disconnect();
+            }
+        }
+        return false;
+    }
     public static boolean putTransactionCategory(int categoryId, String newCategoryName,String newCategoryColor){
         HttpURLConnection conn=null;
         String encodedCategoryName= URLEncoder.encode(newCategoryName, StandardCharsets.UTF_8);
@@ -325,4 +348,5 @@ public class SQLUtil {
         }
         return false;
     }
+
 }

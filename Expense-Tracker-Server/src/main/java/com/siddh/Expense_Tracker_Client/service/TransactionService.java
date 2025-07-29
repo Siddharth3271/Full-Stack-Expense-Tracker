@@ -73,6 +73,18 @@ public class TransactionService {
         return transactionRepository.save(newTransaction);
     }
 
+    //put
+    public Transaction updateTransaction(Transaction transaction){
+        logger.info("Updating transaction with id: "+transaction.getId());
+        Optional<Transaction>transactionOptional=transactionRepository.findById(transaction.getId());
+
+        if(transactionOptional.isEmpty()) return null;
+
+        transactionRepository.save(transaction);
+
+        return transaction;
+    }
+
     //delete
     public void deleteTransactionById(int transactionId){
         logger.info("Deleting Transaction with id "+transactionId);
