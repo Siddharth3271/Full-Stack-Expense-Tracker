@@ -4,11 +4,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import org.example.expensetrackerclient.Controller.DashBoardController;
+import org.example.expensetrackerclient.Models.MonthlyFinance;
 import org.example.expensetrackerclient.animations.LoadingAnimationPane;
 import org.example.expensetrackerclient.utils.ViewNavigator;
 import org.example.expensetrackerclient.utils.Utlities;
+
+import java.math.BigDecimal;
+import java.time.Year;
 
 public class DashBoardView {
 
@@ -17,10 +22,18 @@ public class DashBoardView {
     private Label currentBalanceLabel,currentBalance;
     private Label totalIncomeLabel,totalIncome;
     private Label totalExpenseLabel,totalExpense;
-    private MenuItem createCategoryMenuItem,viewCategoriesMenuItem;
-    private Button addTransactionButton;
+
+    private ComboBox<Integer>yearComboBox;
+    private MenuItem createCategoryMenuItem,viewCategoriesMenuItem,logoutMenuItem;
+    private Button addTransactionButton,viewChartButton;
     private VBox recentTransactionsBox;
     private ScrollPane recentTransactionScrollPane;
+
+    //table
+    private TableView<MonthlyFinance>transactionTable;
+    private TableColumn<MonthlyFinance,String>monthColumn;
+    private TableColumn<MonthlyFinance, BigDecimal>incomeColumn;
+    private TableColumn<MonthlyFinance,BigDecimal>expenseColumn;
 
     public DashBoardView(String email){
         this.email=email;
@@ -85,7 +98,9 @@ public class DashBoardView {
 
         createCategoryMenuItem=new MenuItem("Create Category");
         viewCategoriesMenuItem=new MenuItem("View Categories");
-        fileMenu.getItems().addAll(createCategoryMenuItem,viewCategoriesMenuItem);
+        logoutMenuItem=new MenuItem("Logout");
+
+        fileMenu.getItems().addAll(createCategoryMenuItem,viewCategoriesMenuItem,logoutMenuItem);
         menuBar.getMenus().addAll(fileMenu);
 
         return menuBar;
@@ -129,13 +144,57 @@ public class DashBoardView {
         columnConstraints.setPercentWidth(50);
         gridPane.getColumnConstraints().addAll(columnConstraints,columnConstraints);
 
-        //recent transactions
+        //transaction table summary(left side)
+        VBox transactionTableSummaryBox=new VBox(15);
+        HBox yearComboBoxAndChartButtonBox=createYearComboBoxAndChartButtonBox();
+        VBox transactionTableContentBox=createTransactionTableContentBox();
+        transactionTableSummaryBox.getChildren().addAll(yearComboBoxAndChartButtonBox,transactionTableContentBox);
+
+        //recent transactions(right side)
         VBox recentTransactions=createRecentTransactionsVBox();
         recentTransactions.getStyleClass().addAll("field-background","rounded-border","padding-10px");
         GridPane.setVgrow(recentTransactions,Priority.ALWAYS);
 
+        gridPane.add(transactionTableSummaryBox,0,0);
         gridPane.add(recentTransactions,1,0);
         return gridPane;
+    }
+
+    private HBox createYearComboBoxAndChartButtonBox(){
+        HBox hBox=new HBox(15);
+        yearComboBox=new ComboBox<>();
+        yearComboBox.getStyleClass().addAll("text-size-md");
+        yearComboBox.setValue(Year.now().getValue());
+
+        viewChartButton=new Button("View Chart");
+        viewChartButton.getStyleClass().addAll("field-background","text-light-gray","text-size-md");
+
+        hBox.getChildren().addAll(yearComboBox,viewChartButton);
+        return hBox;
+    }
+
+    private VBox createTransactionTableContentBox(){
+        VBox vbox = new VBox();
+        transactionTable = new TableView<>();
+        VBox.setVgrow(transactionTable, Priority.ALWAYS);
+
+        monthColumn = new TableColumn<>("Month");
+        monthColumn.setCellValueFactory(new PropertyValueFactory<>("month"));
+        monthColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
+
+        incomeColumn = new TableColumn<>("Income");
+        incomeColumn.setCellValueFactory(new PropertyValueFactory<>("income"));
+        incomeColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
+
+        expenseColumn = new TableColumn<>("Expense");
+        expenseColumn.setCellValueFactory(new PropertyValueFactory<>("expense"));
+        expenseColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
+
+        transactionTable.getColumns().addAll(monthColumn, incomeColumn, expenseColumn);
+        vbox.getChildren().addAll(transactionTable);
+
+//        resizeTableWidthColumns();
+        return vbox;
     }
 
     private VBox createRecentTransactionsVBox(){
@@ -173,6 +232,10 @@ public class DashBoardView {
 
     public MenuItem getViewCategoriesMenuItem() {
         return viewCategoriesMenuItem;
+    }
+
+    public MenuItem getLogoutMenuItem(){
+        return logoutMenuItem;
     }
 
     public String getEmail() {

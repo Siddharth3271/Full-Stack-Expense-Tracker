@@ -11,6 +11,7 @@ import org.example.expensetrackerclient.Models.User;
 import org.example.expensetrackerclient.components.TransactionComponent;
 import org.example.expensetrackerclient.utils.SQLUtil;
 import org.example.expensetrackerclient.views.DashBoardView;
+import org.example.expensetrackerclient.views.LoginClass;
 
 import java.util.List;
 
@@ -81,6 +82,13 @@ public class DashBoardController {
             @Override
             public void handle(ActionEvent actionEvent) {
                 new VieworEditTransactionCategoryDialog(user,DashBoardController.this).showAndWait();
+            }
+        });
+
+        dashBoardView.getLogoutMenuItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new LoginClass().show();
             }
         });
     }
