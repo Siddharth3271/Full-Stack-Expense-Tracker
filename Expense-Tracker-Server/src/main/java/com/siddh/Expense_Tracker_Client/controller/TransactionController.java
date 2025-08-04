@@ -27,6 +27,20 @@ public class TransactionController{
         return ResponseEntity.status(HttpStatus.OK).body(recentTransactionList);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Transaction>>getAllTransactionsByUserIdAndYear(@PathVariable int userId,@RequestParam int year){
+        logger.info("getting all transactions with userId: "+userId+" @"+year);
+        List<Transaction>transactionList=transactionService.getAllTransactionsByUserIdAndYear(userId,year);
+
+        return ResponseEntity.status(HttpStatus.OK).body(transactionList);
+    }
+
+    @GetMapping("/years/{userId}")
+    public ResponseEntity<List<Integer>>getDistinctTransactionYears(@PathVariable int userId){
+        logger.info("Getting distinct years: "+userId);
+        return ResponseEntity.status(HttpStatus.OK).body(transactionService.getDistinctTransactionYears(userId));
+    }
+
     //post
     @PostMapping
     public ResponseEntity<Transaction>createTransaction(@RequestBody Transaction transaction){

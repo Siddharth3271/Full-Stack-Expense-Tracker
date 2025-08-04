@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 
-import javax.swing.text.html.Option;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +45,29 @@ public class TransactionService {
             combinedResults.addAll(pageResults);
         }
         return combinedResults;
+    }
+
+    public List<Transaction>getAllTransactionsByUserIdAndYear(int userId,int year){
+        logger.info("Getting all transaction in year: "+year+" for user: "+userId);
+        LocalDate startDate=LocalDate.of(year,1,1);
+        LocalDate endDate=LocalDate.of(year,12,31);
+
+        return transactionRepository.findAllByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(
+                userId,startDate,endDate
+        );
+    }
+    public List<Transaction>getAllTransactionsByUserIdAndYearAndMonth(int userId,int year,int month){
+        logger.info("Getting all transaction in month: "+month+"and year: "+year+" for user: "+userId);
+        LocalDate startDate=LocalDate.of(year,month,1);
+        LocalDate endDate=LocalDate.of(year,month,31);
+
+        return transactionRepository.findAllByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(
+                userId,startDate,endDate
+        );
+    }
+
+    public List<Integer>getDistinctTransactionYears(int userId){
+        return transactionRepository.findDistinctYears(userId);
     }
 
     //post

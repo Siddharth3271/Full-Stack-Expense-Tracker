@@ -1,11 +1,14 @@
 package org.example.expensetrackerclient.Controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.example.expensetrackerclient.Dialogs.CreateNewCategoryDialog;
 import org.example.expensetrackerclient.Dialogs.CreateOrEditTransactionDialog;
 import org.example.expensetrackerclient.Dialogs.VieworEditTransactionCategoryDialog;
+import org.example.expensetrackerclient.Models.MonthlyFinance;
 import org.example.expensetrackerclient.Models.Transaction;
 import org.example.expensetrackerclient.Models.User;
 import org.example.expensetrackerclient.components.TransactionComponent;
@@ -13,6 +16,9 @@ import org.example.expensetrackerclient.utils.SQLUtil;
 import org.example.expensetrackerclient.views.DashBoardView;
 import org.example.expensetrackerclient.views.LoginClass;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 public class DashBoardController {
@@ -22,10 +28,13 @@ public class DashBoardController {
     private User user;
 
     private int currentPage;
-    private List<Transaction>recentTransactions;
+    private int currentYear;
+    private List<Transaction>recentTransactions,currentTransactionsByYear;
 
     public DashBoardController(DashBoardView dashBoardView){
         this.dashBoardView=dashBoardView;
+        currentYear=dashBoardView.getYearComboBox().getValue();  //defaults to the current year
+//        currentYear=2024;
         fetchUserData();
         initialize();
     }
@@ -36,7 +45,14 @@ public class DashBoardController {
 
         //remove all the children from the dashboard view
         dashBoardView.getRecentTransactionsBox().getChildren().clear();
+
         user= SQLUtil.getUserByEmail(dashBoardView.getEmail());
+
+        //get the transactions for the year
+        currentTransactionsByYear=SQLUtil.getAllTransactionsByUserId(user.getId(),currentYear);
+        dashBoardView.getYearComboBox().setItems(FXCollections.observableList(SQLUtil.getAllDistinctYears(user.getId())));
+        dashBoardView.getTransactionTable().setItems(calculateMonthlyFinances());
+
         createRecentTransactionComponents();
 
         new Thread(new Runnable() {
@@ -63,10 +79,36 @@ public class DashBoardController {
         }
     }
 
+    private ObservableList<MonthlyFinance>calculateMonthlyFinances(){
+        double[] incomeCounter=new double[12];
+        double[] expenseCounter=new double[12];
+
+        for(Transaction transaction:currentTransactionsByYear){
+            LocalDate transactionDate=transaction.getTransactionDate();
+            if(transaction.getTransactionType().equalsIgnoreCase("income")){
+                incomeCounter[transactionDate.getMonth().getValue()-1]+=transaction.getTransactionAmount();
+            }
+            else{
+                expenseCounter[transactionDate.getMonth().getValue()-1]+=transaction.getTransactionAmount();
+            }
+        }
+
+        ObservableList<MonthlyFinance>monthlyFinances= FXCollections.observableArrayList();
+        for(int i=0;i<12;i++){
+            MonthlyFinance monthlyFinance=new MonthlyFinance(
+                    Month.of(i+1).name(),new BigDecimal(String.valueOf(incomeCounter[i])),
+                    new BigDecimal(String.valueOf(expenseCounter[i]))
+            );
+            monthlyFinances.add(monthlyFinance);
+        }
+        return monthlyFinances;
+    }
+
     private void initialize(){
 
         addMenuActions();
         addRecentTransactionActions();
+        addComboBoxActions();
 
     }
 
@@ -98,6 +140,18 @@ public class DashBoardController {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 new CreateOrEditTransactionDialog(DashBoardController.this,false).showAndWait();
+            }
+        });
+    }
+
+    private void addComboBoxActions(){
+        dashBoardView.getYearComboBox().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                // update the current year
+                currentYear = dashBoardView.getYearComboBox().getValue();
+                // refresh the data
+                fetchUserData();
             }
         });
     }

@@ -158,6 +158,104 @@ public class SQLUtil {
         return null;
     }
 
+    public static List<Transaction>getAllTransactionsByUserId(int userId,int year){
+        List<Transaction>transactions=new ArrayList<>();
+        HttpURLConnection conn=null;
+        try{
+            conn= ApiUtil.fetchApi(
+                    "/api/v1/transaction/user/"+userId+"?year="+year,
+                    ApiUtil.RequestMethod.GET,
+                    null
+            );
+//            String debug = ApiUtil.readApiResponse(conn);
+//            System.out.println("Received JSON response: " + debug);
+
+            if(conn.getResponseCode()!=200){
+                return null;
+            }
+
+            String results=ApiUtil.readApiResponse(conn);
+//            System.out.println(results);
+            JsonArray resultJson=new JsonParser().parse(results).getAsJsonArray();
+
+            for(int i=0;i<resultJson.size();i++){
+                JsonObject transactionJsonObject=resultJson.get(i).getAsJsonObject();
+                int transactionId=transactionJsonObject.get("id").getAsInt();
+
+                TransactionCategory transactionCategory=null;
+                if(transactionJsonObject.has("transactionCategory") && !transactionJsonObject.get("transactionCategory").isJsonNull()){
+                    JsonObject transactionCategoryJsonObject=transactionJsonObject.get("transactionCategory").getAsJsonObject();
+
+                    int transactionCategoryId=transactionCategoryJsonObject.get("id").getAsInt();
+                    String transactionCategoryName=transactionCategoryJsonObject.get("categoryName").getAsString();
+                    String transactionCategoryColor=transactionCategoryJsonObject.get("categoryColor").getAsString();
+                    transactionCategory=new TransactionCategory(
+                      transactionCategoryId,transactionCategoryName,transactionCategoryColor
+                    );
+                }
+
+                String transactionName=transactionJsonObject.get("transactionName").getAsString();
+                double transactionAmount=transactionJsonObject.get("transactionAmount").getAsDouble();
+                LocalDate transactionDate= LocalDate.parse(transactionJsonObject.get("transactionDate").getAsString());
+                String transactionType=transactionJsonObject.get("transactionType").getAsString();
+
+                Transaction transaction=new Transaction(
+                        transactionId,transactionCategory,transactionName,transactionAmount,transactionDate,transactionType
+                );
+                transactions.add(transaction);
+            }
+            return transactions;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if(conn!=null){
+                conn.disconnect();
+            }
+        }
+
+        return null;
+    }
+
+    public static List<Integer>getAllDistinctYears(int userId){
+        List<Integer>distinctYears=new ArrayList<>();
+        HttpURLConnection conn=null;
+        try{
+            conn= ApiUtil.fetchApi(
+                    "/api/v1/transaction/years/"+userId,
+                    ApiUtil.RequestMethod.GET,
+                    null
+            );
+//            String debug = ApiUtil.readApiResponse(conn);
+//            System.out.println("Received JSON response: " + debug);
+
+            if(conn.getResponseCode()!=200){
+                System.out.println("Error(getAllDistinctYears): "+conn.getResponseCode());
+            }
+
+            String results=ApiUtil.readApiResponse(conn);
+//            System.out.println(results);
+            JsonArray resultsArray=new JsonParser().parse(results).getAsJsonArray();
+            for(int i=0;i<resultsArray.size();i++){
+                int year=resultsArray.get(i).getAsInt();
+                distinctYears.add(year);
+            }
+            return distinctYears;
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if(conn!=null){
+                conn.disconnect();
+            }
+        }
+
+        return null;
+    }
+
     //post
     public static boolean postLoginUser(String email,String password){
         //authenticate email and password

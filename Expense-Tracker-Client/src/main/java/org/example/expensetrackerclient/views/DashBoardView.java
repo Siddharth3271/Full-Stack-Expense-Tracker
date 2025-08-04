@@ -1,5 +1,6 @@
 package org.example.expensetrackerclient.views;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
@@ -59,6 +60,7 @@ public class DashBoardView {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 loadingAnimationPane.resizeWidth(t1.doubleValue());
+                resizeTableWidthColumns();
             }
         });
 
@@ -138,6 +140,7 @@ public class DashBoardView {
 
     private GridPane createContentGridPane(){
         GridPane gridPane=new GridPane();
+        gridPane.setHgap(8);
 
         //set the constraints to the cells in the gridpane
         ColumnConstraints columnConstraints=new ColumnConstraints();
@@ -145,9 +148,10 @@ public class DashBoardView {
         gridPane.getColumnConstraints().addAll(columnConstraints,columnConstraints);
 
         //transaction table summary(left side)
-        VBox transactionTableSummaryBox=new VBox(15);
+        VBox transactionTableSummaryBox=new VBox(12);
         HBox yearComboBoxAndChartButtonBox=createYearComboBoxAndChartButtonBox();
         VBox transactionTableContentBox=createTransactionTableContentBox();
+        VBox.setVgrow(transactionTableContentBox,Priority.ALWAYS);
         transactionTableSummaryBox.getChildren().addAll(yearComboBoxAndChartButtonBox,transactionTableContentBox);
 
         //recent transactions(right side)
@@ -161,7 +165,7 @@ public class DashBoardView {
     }
 
     private HBox createYearComboBoxAndChartButtonBox(){
-        HBox hBox=new HBox(15);
+        HBox hBox=new HBox(20);
         yearComboBox=new ComboBox<>();
         yearComboBox.getStyleClass().addAll("text-size-md");
         yearComboBox.setValue(Year.now().getValue());
@@ -193,7 +197,7 @@ public class DashBoardView {
         transactionTable.getColumns().addAll(monthColumn, incomeColumn, expenseColumn);
         vbox.getChildren().addAll(transactionTable);
 
-//        resizeTableWidthColumns();
+        resizeTableWidthColumns();
         return vbox;
     }
 
@@ -205,12 +209,12 @@ public class DashBoardView {
         Label recentTransactionLabel=new Label("Recent Transactions");
         recentTransactionLabel.getStyleClass().addAll("text-size-lg","text-light-gray");
 
-        Region labelandButtonSpace=new Region();
-        HBox.setHgrow(labelandButtonSpace,Priority.ALWAYS);
+        Region labelAndButtonSpace=new Region();
+        HBox.setHgrow(labelAndButtonSpace,Priority.ALWAYS);
 
         addTransactionButton.getStyleClass().addAll("field-background","text-size-md","text-light-gray","rounded-border");
 
-        recentTransactionLabelandButton.getChildren().addAll(recentTransactionLabel,labelandButtonSpace,addTransactionButton);
+        recentTransactionLabelandButton.getChildren().addAll(recentTransactionLabel,labelAndButtonSpace,addTransactionButton);
 
         //recent transactions box
         recentTransactionsBox=new VBox(8);
@@ -220,6 +224,18 @@ public class DashBoardView {
 
         recentTransactions.getChildren().addAll(recentTransactionLabelandButton,recentTransactionScrollPane);
         return recentTransactions;
+    }
+
+    private void resizeTableWidthColumns(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                double colsWidth = transactionTable.getWidth() * (0.335);
+                monthColumn.setPrefWidth(colsWidth);
+                incomeColumn.setPrefWidth(colsWidth);
+                expenseColumn.setPrefWidth(colsWidth);
+            }
+        });
     }
 
     public MenuItem getCreateCategoryMenuItem() {
@@ -252,5 +268,25 @@ public class DashBoardView {
 
     public LoadingAnimationPane getLoadingAnimationPane(){
         return loadingAnimationPane;
+    }
+
+    public TableColumn<MonthlyFinance, BigDecimal> getExpenseColumn() {
+        return expenseColumn;
+    }
+
+    public TableColumn<MonthlyFinance, BigDecimal> getIncomeColumn() {
+        return incomeColumn;
+    }
+
+    public TableColumn<MonthlyFinance, String> getMonthColumn() {
+        return monthColumn;
+    }
+
+    public TableView<MonthlyFinance> getTransactionTable() {
+        return transactionTable;
+    }
+
+    public ComboBox<Integer>getYearComboBox(){
+        return yearComboBox;
     }
 }

@@ -45,6 +45,13 @@ ScrollPane, ScrollPane > .viewport{
 -fx-text-fill:#fff;
 }
 
+.table-view .scroll-bar:horizontal,
+.table-view .scroll-bar:vertical{
+    -fx-opacity:0;
+    -fx-pref-width:0;
+    -fx-pref-height:0;
+}
+
 /* text */
 .text-size-lg{
     -fx-font-size: 20px;
