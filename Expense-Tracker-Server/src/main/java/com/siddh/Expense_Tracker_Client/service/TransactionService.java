@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +51,7 @@ public class TransactionService {
     public List<Transaction>getAllTransactionsByUserIdAndYear(int userId,int year){
         logger.info("Getting all transaction in year: "+year+" for user: "+userId);
         LocalDate startDate=LocalDate.of(year,1,1);
-        LocalDate endDate=LocalDate.of(year,12,31);
+        LocalDate endDate=LocalDate.of(year, 12, 31);
 
         return transactionRepository.findAllByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(
                 userId,startDate,endDate
@@ -58,8 +59,9 @@ public class TransactionService {
     }
     public List<Transaction>getAllTransactionsByUserIdAndYearAndMonth(int userId,int year,int month){
         logger.info("Getting all transaction in month: "+month+"and year: "+year+" for user: "+userId);
+        YearMonth yearMonth = YearMonth.of(year, month);
         LocalDate startDate=LocalDate.of(year,month,1);
-        LocalDate endDate=LocalDate.of(year,month,31);
+        LocalDate endDate=yearMonth.atEndOfMonth();
 
         return transactionRepository.findAllByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(
                 userId,startDate,endDate

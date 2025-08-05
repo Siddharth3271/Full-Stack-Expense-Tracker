@@ -169,9 +169,12 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
                     TransactionCategory transactionCategory= Utlities.findTransactionCategoryByName(
                             transactionCategories,transactionCategoryName
                     );
-                    JsonObject transactionCategoryData=new JsonObject();
-                    transactionCategoryData.addProperty("id",transactionCategory.getId());
-                    transactionDataObject.add("transactionCategory",transactionCategoryData);
+
+                    if(transactionCategory!=null){
+                        JsonObject transactionCategoryData=new JsonObject();
+                        transactionCategoryData.addProperty("id",transactionCategory.getId());
+                        transactionDataObject.add("transactionCategory",transactionCategoryData);
+                    }
                 }
 
                 JsonObject userData=new JsonObject();
@@ -179,6 +182,7 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
                 transactionDataObject.add("user",userData);
 
                 System.out.println("Sending JSON: " + transactionDataObject.toString());
+
                 //perform the post request to perform the transaction
                 if(!isEditing?SQLUtil.postTransaction(transactionDataObject):SQLUtil.putTransaction(transactionDataObject)){
                     //display alert message
@@ -186,6 +190,15 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
                     //refresh our dashboard
                     dashBoardController.fetchUserData();
 
+                    //refresh the transaction component
+                    if(isEditing){
+                        transactionComponent.getTransactionCategoryLabel().setText(
+                                transactionCategoryName.isEmpty()?"Undefined":transactionCategoryName
+                        );
+                        transactionComponent.getTransactionNameLabel().setText(transactionName);
+                        transactionComponent.getTransactionDateLabel().setText(transactionDate.toString());
+                        transactionComponent.getTransactionAmountLabel().setText(String.valueOf(transactionAmountField));
+                    }
 
                 }
 

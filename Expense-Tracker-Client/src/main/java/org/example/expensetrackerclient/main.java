@@ -14,8 +14,8 @@ public class main extends Application {
     public void start(Stage stage) throws Exception {
         stage.setTitle("Expense-Tracker");
         ViewNavigator.setMainStage(stage);
-//        new LoginClass().show();
+        new LoginClass().show();
 //        new SignUpClass().show();
-        new DashBoardView("name1@email.com").show();
+//        new DashBoardView("name1@email.com").show();
     }
 }

@@ -72,6 +72,9 @@ public class CategoryComponent extends HBox {
 
                 //update the database
                 SQLUtil.putTransactionCategory(transactionCategory.getId(),newCategoryName,newCategoryColor);
+
+                //refreshes the dashboard
+                dashBoardController.fetchUserData();
             }
         });
 

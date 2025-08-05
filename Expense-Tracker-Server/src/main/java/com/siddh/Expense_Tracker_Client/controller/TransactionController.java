@@ -28,9 +28,16 @@ public class TransactionController{
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Transaction>>getAllTransactionsByUserIdAndYear(@PathVariable int userId,@RequestParam int year){
+    public ResponseEntity<List<Transaction>>getAllTransactionsByUserIdAndYearOrMonth(@PathVariable int userId,@RequestParam int year,@RequestParam(required=false)Integer month){
         logger.info("getting all transactions with userId: "+userId+" @"+year);
-        List<Transaction>transactionList=transactionService.getAllTransactionsByUserIdAndYear(userId,year);
+        List<Transaction>transactionList=null;
+
+        if(month==null){
+            transactionList=transactionService.getAllTransactionsByUserIdAndYear(userId,year);
+        }
+        else{
+            transactionList=transactionService.getAllTransactionsByUserIdAndYearAndMonth(userId,year,month);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(transactionList);
     }

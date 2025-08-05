@@ -4,20 +4,20 @@
     -fx-border-color: #fff;
 } */
 
-VBox {
+/*VBox {
     -fx-border-width: 1px;
     -fx-border-color: red;
-}
+}*/
 
 /*HBox {
     -fx-border-width: 1px;
     -fx-border-color: blue;
 }
 */
-GridPane {
+/*GridPane {
     -fx-border-width: 1px;
     -fx-border-color: green;
-}
+}*/
 
 /* generic classes */
 Button{
@@ -51,6 +51,19 @@ ScrollPane, ScrollPane > .viewport{
     -fx-pref-width:0;
     -fx-pref-height:0;
 }
+
+/*bar chart*/
+.axis-label{
+    -fx-text-fill:#BEB9B9;
+}
+.default-color0.chart-legend-item-symbol{
+-fx-background-color:#33ba2f;
+}
+
+.default-color1.chart-legend-item-symbol{
+-fx-background-color:#ba2f2f;
+}
+
 
 /* text */
 .text-size-lg{
