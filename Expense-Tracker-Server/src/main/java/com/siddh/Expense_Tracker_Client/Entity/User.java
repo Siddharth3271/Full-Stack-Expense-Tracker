@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 //marks the class as JPA entity which means that it will be mapped to the user table in our db
 @Entity
-@Table(name="user")
+@Table(name="`user`")
 public class User {
 
     @Id

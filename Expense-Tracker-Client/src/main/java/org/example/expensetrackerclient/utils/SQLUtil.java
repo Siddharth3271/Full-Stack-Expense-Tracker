@@ -292,7 +292,7 @@ public class SQLUtil {
         HttpURLConnection conn=null;
         try{
             conn=ApiUtil.fetchApi(
-              "api/v1/user", ApiUtil.RequestMethod.POST,userData
+              "/api/v1/user", ApiUtil.RequestMethod.POST,userData
             );
 
             if(conn.getResponseCode()!=200) {
