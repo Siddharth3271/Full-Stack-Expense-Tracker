@@ -17,7 +17,7 @@ A comprehensive desktop application designed to help users manage and visualize 
 ![createCategory Page](images/createcategory.png)
 
 ### Transaction Creation with drop down of category selection
-![createTransaction Page](images/createtransactionages.png)
+![createTransaction Page](images/createtransaction.png)
 
 ### View Existing Categories
 ![viewCategory Page](images/viewcategory.png)
