@@ -3,11 +3,23 @@
 A comprehensive desktop application designed to help users manage and visualize their personal finances. Built as a full-stack project, it provides a secure, interactive platform for tracking income and expenses.
 
 ## Application ScreenShots
+
+### Login Page
 ![login Page](images/login.png)
+
+### Dashboard
 ![dashboard Page](images/dashboard.png)
+
+### Bar Graph for the selected year expenses
 ![bargraph Page](images/bargraph.png)
+
+### Create Category(With color picker)
 ![createCategory Page](images/createcategory.png)
+
+### Transaction Creation with drop down of category selection
 ![createTransaction Page](images/createtransactionages.png)
+
+### View Existing Categories
 ![viewCategory Page](images/viewcategory.png)
 
 ---
@@ -77,3 +89,8 @@ The application is split into two modules: the server (backend) and the client (
 This is a personal project, but feel free to open issues or submit pull requests. All contributions are welcome.
 
 ---
+
+## Future Integrations
+- Adding google authorization
+- Yearly Bar Graph Statistics
+- Making its execuatble file
