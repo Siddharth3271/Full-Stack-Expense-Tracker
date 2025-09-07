@@ -47,7 +47,7 @@ This project is built using a modern full-stack architecture.
 ---
 
 ## Spring Boot Flow Architecture
-![diagram1](https://files.codingninjas.in/article_images/spring-boot-architecture-1-1640757816.webp)
+![diagram1](images/architecture.png)
 
 This project follows a 3-layered architecture (Controller → Service → Repository), using Spring Boot and JPA for backend development.
 
