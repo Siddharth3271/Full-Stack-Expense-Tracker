@@ -54,135 +54,94 @@ This project follows a 3-layered architecture (Controller → Service → Reposi
 1. User
 
 - Represents the system’s users.
-
 - Fields: id, name, email, password, createdAt
-
 - Each user can have multiple transactions and categories.
-
 - Provides getter/setter methods.
 
 2. UserRepository
 
 - Data-access layer for User.
-
 - findByEmail(String) → fetch user by email
-
 - deleteByEmail(String) → delete user by email
 
 3. UserService
 
 - Business logic layer for users.
-
 - getUserById(int)
-
 - getUserByEmail(String)
-
 - createUser(String name, String email, String password)
 
 4. UserController
 
 - Exposes REST endpoints for user management.
-
 - loginUser(String, String) → authenticate user
-
 - createUser(User) → register new user
-
 - getUserByEmail(String) → fetch user by email
 
 5. Transaction
 
 - Represents a financial transaction.
-
 - Fields: id, transactionName, transactionAmount, transactionType, transactionDate
-
 - Linked to both User and TransactionCategory.
 
 6. TransactionRepository
 
 - Data-access layer for Transaction.
-
 - findAllByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(...)
-
 - findAllByUserIdOrderByTransactionDateDesc(...)
-
 - findDistinctYears(int)
 
 7. TransactionService
 
 - Business logic for transactions.
-
 - getDistinctTransactionYears(int)
-
 - deleteTransactionById(int)
-
 - getAllTransactionsByUserIdAndYear(int, int)
-
 - createTransaction(Transaction)
-
 - getRecentTransactionsByUserId(int, int, int)
-
 - updateTransaction(Transaction)
-
 - getAllTransactionsByUserIdAndYearAndMonth(int, int, int)
 
 8. TransactionController
 
 - REST endpoints for transactions.
-
 - Get all transactions by user/year/month
-
 - Fetch recent transactions
-
 - Create/update/delete transactions
-
 - Get distinct transaction years
 
 9. TransactionCategory
 
 - Represents categories for organizing transactions (e.g., Food, Travel, Bills).
-
 - Fields: id, categoryName, categoryColor
-
 - Linked to a User
 
 10. TransactionCategoryRepository
 
 - Data-access layer for categories.
-
 - findAllByUserId(int) → fetch categories of a user
 
 11. TransactionCategoryService
 
 - Business logic for categories.
-
 - getTransactionCategoryById(int)
-
 - getAllTransactionCategoriesByUserId(int)
-
 - createTransactionCategory(int userId, String name, String color)
-
 - updateTransactionCategoryById(int, String, String)
-
 - deleteTransactionCategoryById(int)
 
 12. TransactionCategoryController
 
 - REST endpoints for category management.
-
 - getAllTransactionCategoriesByUserId(int)
-
 - createTransactionCategory(TransactionCategory)
-
 - getTransactionCategoryById(int)
-
 - updateTransactionCategoryById(int, String, String)
-
 - deleteTransactionCategoryById(int)
 
 13. ExpenseTrackerServerApplication
 
 - Main entry point of the Spring Boot application.
-
 - Contains main(String[] args) to bootstrap the server
 
 ## Expense Tracker Server UML Diagram
